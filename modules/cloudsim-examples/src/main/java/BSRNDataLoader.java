@@ -1,3 +1,5 @@
+import org.cloudbus.cloudsim.examples.power.planetlab.Dvfs;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,7 +9,17 @@ import java.util.Arrays;
 
 public class BSRNDataLoader {
     public static void main(String[] args) {
-        String datasetFileName = args[0];
+
+        String datasetFileName;
+        if(args.length > 0){
+            datasetFileName = args[0];
+        }
+        else {
+        /*
+        *   If no arguments were specified, run program with data example.
+        */
+            datasetFileName = "Data-example-04_QC_combined.txt";
+        }
 
         InputStream fileInputStream = BSRNDataLoader.class.getResourceAsStream(datasetFileName);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
