@@ -33,7 +33,7 @@ public class Dvfs {
 	public static void main(String[] args) throws IOException {
 		boolean enableOutput = true;
 		boolean outputToFile = false;
-		String inputFolder = Dvfs.class.getClassLoader().getResource("workload/planetlab").getPath();
+		String inputFolder = Dvfs.class.getClassLoader().getResource("workload/planetlab").getPath().replace("%20", " ");
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "dvfs"; // DVFS policy without VM migrations
