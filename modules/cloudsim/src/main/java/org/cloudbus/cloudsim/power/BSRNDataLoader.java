@@ -1,4 +1,4 @@
-import org.cloudbus.cloudsim.examples.power.planetlab.Dvfs;
+package org.cloudbus.cloudsim.power;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -9,25 +9,16 @@ import java.util.Arrays;
 
 public class BSRNDataLoader {
     public static void main(String[] args) {
-
-        String datasetFileName;
-        if(args.length > 0){
-            datasetFileName = args[0];
-        }
-        else {
-        /*
-        *   If no arguments were specified, run program with data example.
-        */
-            datasetFileName = "Data-example-04_QC_combined.txt";
-        }
+        String datasetFileName = args.length > 0 ? args[0] : "BRB_radiation_2019-04.tab";
 
         InputStream fileInputStream = BSRNDataLoader.class.getResourceAsStream(datasetFileName);
+        System.out.println(fileInputStream);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
         bufferedReader
             .lines()
             .filter(line -> {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
                 try {
                     dateFormat.parse(line.split("\t")[0]);
                     return true;
