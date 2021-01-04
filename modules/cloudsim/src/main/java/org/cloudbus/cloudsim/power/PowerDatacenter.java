@@ -248,7 +248,7 @@ public class PowerDatacenter extends Datacenter {
 		double power = getPower() + timeFrameDatacenterEnergy;
 		double timeframeRenewableEnergy = renewableEnergySource.getEnergyInTimeframe(currentTime, timeDiff);
 		// NOTE: we assume that collectors doesn't have any integrated accumulator, and excess energy is lost
-		double renewablePower = getPower() + Math.min(timeFrameDatacenterEnergy, timeframeRenewableEnergy);
+		double renewablePower = getRenewablePower() + Math.min(timeFrameDatacenterEnergy, timeframeRenewableEnergy);
 
 		setPower(power);
 		setRenewablePower(renewablePower);
