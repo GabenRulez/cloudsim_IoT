@@ -3,7 +3,7 @@ package org.cloudbus.cloudsim.power;
 public class RenewableEnergySource {
     /*
         TODO:
-        - get data from BSRNDataLoader
+        - get data from BSRNDataLoader and apply it to the PhotovoltaicFarm
         - set start date (equivalent of 0 timestamp, this is arbitrary choice made by us)
         - implement getEnergyInTimeframe function.
         Remember that data from BSRNDataLoader is in minute intervals, and timestamps are seconds.

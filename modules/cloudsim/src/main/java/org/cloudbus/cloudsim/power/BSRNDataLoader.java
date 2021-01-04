@@ -2,11 +2,7 @@ package org.cloudbus.cloudsim.power;
 
 import com.opencsv.CSVReader;
 
-import javax.sound.sampled.Line;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 
@@ -26,7 +22,7 @@ public class BSRNDataLoader {
         String[] nextLine;
 
         while ((nextLine = csvReader.readNext()) != null && !nextLine[0].startsWith("Date")) {
-            //skip those lines
+            //skip commented lines
         }
 
         int radiationDataIdx = 0;
