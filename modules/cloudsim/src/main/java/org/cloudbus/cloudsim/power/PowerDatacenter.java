@@ -253,6 +253,11 @@ public class PowerDatacenter extends Datacenter {
 		setPower(power);
 		setRenewablePower(renewablePower);
 
+		Log.formatLine(
+				"\n%.2f: Data center's renewable power used is %.2f W*sec\n",
+				currentTime,
+				getRenewablePower());
+
 		checkCloudletCompletion();
 
 		/** Remove completed VMs **/

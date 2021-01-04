@@ -8,10 +8,10 @@ import java.util.LinkedHashMap;
 
 public class BSRNDataLoader {
 
-    private final LinkedHashMap<String, Float> energiesByDate;
+    private final LinkedHashMap<String, Float> radiationsByDate;
 
     public BSRNDataLoader(String filename) throws IOException {
-        energiesByDate = new LinkedHashMap<>();
+        radiationsByDate = new LinkedHashMap<>();
 
         InputStream is = BSRNDataLoader.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(is);
@@ -33,7 +33,7 @@ public class BSRNDataLoader {
             String radiationStr = nextLine[radiationDataIdx];
             float radiation = radiationStr.equals("") ? 0 : Float.parseFloat(nextLine[radiationDataIdx]);
 
-            energiesByDate.put(nextLine[0], radiation);
+            radiationsByDate.put(nextLine[0], radiation);
 
         }
     }
@@ -43,9 +43,10 @@ public class BSRNDataLoader {
         this("BRB_radiation_2019-04.tab");
     }
 
-    public LinkedHashMap<String, Float> getEnergiesByDate(){
-        return energiesByDate;
+    public LinkedHashMap<String, Float> getRadiationsByDate(){
+        return radiationsByDate;
     }
+
     public static void main(String[] args) throws IOException {
         new BSRNDataLoader();
 //        String datasetFileName = args.length > 0 ? args[0] : "BRB_radiation_2019-04.tab";
