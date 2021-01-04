@@ -43,6 +43,9 @@ public class PowerDatacenter extends Datacenter {
 	/** The datacenter consumed power. */
 	private double power;
 
+	/** The datacenter consumed power coming from renewable sources */
+	private double renewablePower;
+
 	/** Indicates if migrations are disabled or not. */
 	private boolean disableMigrations;
 
@@ -51,6 +54,8 @@ public class PowerDatacenter extends Datacenter {
 
 	/** The VM migration count. */
 	private int migrationCount;
+
+	private RenewableEnergySource renewableEnergySource;
 
 	/**
 	 * Instantiates a new PowerDatacenter.
@@ -69,11 +74,25 @@ public class PowerDatacenter extends Datacenter {
 			List<Storage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
+		this.renewableEnergySource = new RenewableEnergySource();
 
 		setPower(0.0);
+		setRenewablePower(0.0);
 		setDisableMigrations(false);
 		setCloudletSubmitted(-1);
 		setMigrationCount(0);
+	}
+
+	public PowerDatacenter(
+		String name,
+		DatacenterCharacteristics characteristics,
+		VmAllocationPolicy vmAllocationPolicy,
+		List<Storage> storageList,
+		double schedulingInterval,
+		RenewableEnergySource renewableEnergySource
+		) throws Exception {
+		this(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
+		this.renewableEnergySource = renewableEnergySource;
 	}
 
 	@Override
@@ -226,7 +245,13 @@ public class PowerDatacenter extends Datacenter {
 					timeFrameDatacenterEnergy);
 		}
 
-		setPower(getPower() + timeFrameDatacenterEnergy);
+		double power = getPower() + timeFrameDatacenterEnergy;
+		double timeframeRenewableEnergy = renewableEnergySource.getEnergyInTimeframe(currentTime, timeDiff);
+		// NOTE: we assume that collectors doesn't have any integrated accumulator, and excess energy is lost
+		double renewablePower = getPower() + Math.min(timeFrameDatacenterEnergy, timeframeRenewableEnergy);
+
+		setPower(power);
+		setRenewablePower(renewablePower);
 
 		checkCloudletCompletion();
 
@@ -277,6 +302,24 @@ public class PowerDatacenter extends Datacenter {
 	 */
 	protected void setPower(double power) {
 		this.power = power;
+	}
+
+	/**
+	 * Gets the renewable power.
+	 *
+	 * @return the power
+	 */
+	public double getRenewablePower() {
+		return renewablePower;
+	}
+
+	/**
+	 * Sets the renewable power.
+	 *
+	 * @param renewablePower the new renewable power
+	 */
+	protected void setRenewablePower(double renewablePower) {
+		this.renewablePower = renewablePower;
 	}
 
 	/**
