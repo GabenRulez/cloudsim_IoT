@@ -246,7 +246,7 @@ public class PowerDatacenter extends Datacenter {
 		}
 
 		double power = getPower() + timeFrameDatacenterEnergy;
-		double timeframeRenewableEnergy = renewableEnergySource.getEnergyInTimeframe(currentTime, timeDiff);
+		double timeframeRenewableEnergy = renewableEnergySource.getEnergyInTimeFrame(currentTime, timeDiff);
 		// NOTE: we assume that collectors doesn't have any integrated accumulator, and excess energy is lost
 		double renewablePower = getRenewablePower() + Math.min(timeFrameDatacenterEnergy, timeframeRenewableEnergy);
 
@@ -257,6 +257,11 @@ public class PowerDatacenter extends Datacenter {
 				"\n%.2f: Data center's renewable power used is %.2f W*sec\n",
 				currentTime,
 				getRenewablePower());
+
+		Log.formatLine(
+				"\n%.2f: Data center's grid power used is %.2f W*sec\n",
+				currentTime,
+				power - getRenewablePower());
 
 		checkCloudletCompletion();
 
