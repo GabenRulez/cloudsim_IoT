@@ -9,12 +9,16 @@ public class PhotovoltaicFarm {
     private final int panelArea;
     private final double solarPanelYield;
     private final double performanceRatio;
+    private final double solarPanelAngle;
+    private final double northing;  // odchylenie na północ (chyba tak jest po angielsku)
 
-    public PhotovoltaicFarm(int numberOfPanels, int panelArea, double solarPanelYield, double performanceRatio){
+    public PhotovoltaicFarm(int numberOfPanels, int panelArea, double solarPanelYield, double performanceRatio, double solarPanelAngle, double northing){
         this.numberOfPanels = numberOfPanels;
         this.panelArea = panelArea;
         this.solarPanelYield = solarPanelYield;
         this.performanceRatio = performanceRatio;
+        this.solarPanelAngle = solarPanelAngle;
+        this.northing = northing;
 
         checkIfParametersAreWrong();
     }
@@ -26,6 +30,8 @@ public class PhotovoltaicFarm {
         this.panelArea = ThreadLocalRandom.current().nextInt(1,5);
         this.solarPanelYield = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
         this.performanceRatio = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
+        this.solarPanelAngle = ThreadLocalRandom.current().nextDouble(-Math.PI /2, Math.PI /2); // Angle measured in radians between normal and solar panel
+        this.northing = ThreadLocalRandom.current().nextDouble(0.0, Math.PI /2); // Not sure about a range of northing will be in
         checkIfParametersAreWrong();
 
         System.out.printf("Class got random attributes 'numberOfPanels'=%d 'panelArea'=%d 'solarPanelYield'=%g 'performanceRatio'=%g%n", numberOfPanels, panelArea, solarPanelYield, performanceRatio);
@@ -56,5 +62,7 @@ public class PhotovoltaicFarm {
         if(panelArea < 0)                                       throw new IllegalArgumentException(errorString + " 'panelArea' shouldn't be lesser than 0. Got '" + panelArea + "'.");
         if(solarPanelYield < 0.0 || solarPanelYield > 1.0)      throw new IllegalArgumentException(errorString + " 'solarPanelYield' should be between 0.0 and 1.0. Got '" + solarPanelYield + "'.");
         if(performanceRatio < 0.0 || performanceRatio > 1.0)    throw new IllegalArgumentException(errorString + " 'performanceRatio' should be between 0.0 and 1.0. Got '" + performanceRatio + "'.");
+        if(solarPanelAngle < -Math.PI /2 || solarPanelAngle > Math.PI /2) throw new IllegalArgumentException(errorString + " 'solarPanelAngle' should be between -PI/2 and PI/2. Got '" + solarPanelAngle + "'.");
+        if(northing < 0 || northing > Math.PI/2)                throw new IllegalArgumentException(errorString + " 'northing' should be between 0.0 and PI/2. Got '" + northing + "'.");
     }
 }
