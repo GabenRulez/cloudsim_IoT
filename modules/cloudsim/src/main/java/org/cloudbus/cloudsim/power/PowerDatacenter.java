@@ -74,7 +74,7 @@ public class PowerDatacenter extends Datacenter {
 			List<Storage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
-		this.renewableEnergySource = new RenewableEnergySource();
+		this.renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm());
 
 		setPower(0.0);
 		setRenewablePower(0.0);

@@ -21,7 +21,11 @@ public class RenewableEnergySource {
     static LinkedHashMap<String, Float> radiationsByDate = bsrnDataLoader.getRadiationsByDate();
     static List<String> keys = new ArrayList<>(radiationsByDate.keySet());
     static List<Float> values = new ArrayList<>(radiationsByDate.values());
-    static PhotovoltaicFarm photovoltaicFarm = new PhotovoltaicFarm();
+    protected PhotovoltaicFarm photovoltaicFarm;
+
+    public RenewableEnergySource(PhotovoltaicFarm photovoltaicFarm){
+        this.photovoltaicFarm = photovoltaicFarm;
+    }
     /*
         DONE:
         - get data from BSRNDataLoader and apply it to the PhotovoltaicFarm (done)
