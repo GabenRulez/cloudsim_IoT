@@ -18,9 +18,13 @@ public class RenewableEnergySource {
             e.printStackTrace();
         }
     }
-    static LinkedHashMap<String, Float> radiationsByDate = bsrnDataLoader.getRadiationsByDate();
-    static List<String> keys = new ArrayList<>(radiationsByDate.keySet());
-    static List<Float> values = new ArrayList<>(radiationsByDate.values());
+    static LinkedHashMap<String, Float> dirRadiationsByDate = bsrnDataLoader.getDirRadiationsByDate();
+    static List<String> dirKeys = new ArrayList<>(dirRadiationsByDate.keySet());
+    static List<Float> dirValues = new ArrayList<>(dirRadiationsByDate.values());
+    static LinkedHashMap<String, Float> difRadiationsByDate = bsrnDataLoader.getDifRadiationsByDate();
+    static List<String> difKeys = new ArrayList<>(difRadiationsByDate.keySet());
+    static List<Float> difValues = new ArrayList<>(difRadiationsByDate.values());
+
     protected PhotovoltaicFarm photovoltaicFarm;
 
     public RenewableEnergySource(PhotovoltaicFarm photovoltaicFarm){
@@ -48,24 +52,35 @@ public class RenewableEnergySource {
         String endKey = getEndKey((int) Math.ceil(currentTime));
         System.out.println(startKey);
         System.out.println(endKey);
-        double roundedUpSum = values.subList(keys.indexOf(startKey), keys.indexOf(endKey) + 1).stream()
-                .mapToDouble(Float::doubleValue)
-                .sum();
-        double startEnergyDelta = computeStartEnergyDelta(startKey, start);
-        double endEnergyDelta = computeEndEnergyDelta(endKey, currentTime);
-        double radiation = roundedUpSum - startEnergyDelta - endEnergyDelta;
-        return photovoltaicFarm.calculateEnergy(timeDiff, radiation);
+        double dirRoundedUpSum = getRadiationRoundedUpSum(dirValues, dirKeys, startKey, endKey);
+        double difRoundedUpSum = getRadiationRoundedUpSum(difValues, difKeys, startKey, endKey);
+        double dirStartEnergyDelta = computeStartEnergyDelta(dirRadiationsByDate, startKey, start);
+        double difStartEnergyDelta = computeStartEnergyDelta(difRadiationsByDate, startKey, start);
+        double dirEndEnergyDelta = computeEndEnergyDelta(dirRadiationsByDate, endKey, currentTime);
+        double difEndEnergyDelta = computeEndEnergyDelta(difRadiationsByDate, endKey, currentTime);
+        double dirRadiation = dirRoundedUpSum - dirStartEnergyDelta - dirEndEnergyDelta;
+        double difRadiation = difRoundedUpSum - difStartEnergyDelta - difEndEnergyDelta;
+        return photovoltaicFarm.calculateEnergy(timeDiff, dirRadiation, difRadiation);
     }
 
-    private static double computeEndEnergyDelta(String endKey, double end) {
-        float energy = radiationsByDate.get(endKey);
+    private static double getRadiationRoundedUpSum(List<Float> values, List<String> keys, String startKey,
+                                                   String endKey) {
+        return values.subList(keys.indexOf(startKey), keys.indexOf(endKey) + 1).stream()
+                .mapToDouble(Float::doubleValue)
+                .sum();
+    }
+
+    private static double computeEndEnergyDelta(LinkedHashMap<String, Float> radiationsBydDate, String endKey,
+                                                double end) {
+        float energy = radiationsBydDate.get(endKey);
         double deltaTime = 60 - (end - (Math.floor(end / 60.0) * 60.0));
         System.out.println(deltaTime);
         return energy * (deltaTime / 60.0);
     }
 
-    private static double computeStartEnergyDelta(String startKey, double start) {
-        float energy = radiationsByDate.get(startKey);
+    private static double computeStartEnergyDelta(LinkedHashMap<String, Float> radiationsBydDate, String startKey,
+                                                  double start) {
+        float energy = radiationsBydDate.get(startKey);
         double deltaTime = start - (Math.floor(start / 60.0) * 60.0);
         System.out.println(deltaTime);
         return energy * (deltaTime / 60.0);
@@ -84,7 +99,7 @@ public class RenewableEnergySource {
     }
 
     private static LocalDateTime getTimestamp(int start) {
-        LocalDateTime startDateTime = LocalDateTime.parse(radiationsByDate.keySet().iterator().next(), DATE_TIME_FORMATTER_NO_SECONDS);
+        LocalDateTime startDateTime = LocalDateTime.parse(dirKeys.iterator().next(), DATE_TIME_FORMATTER_NO_SECONDS);
         return startDateTime.plusSeconds(start);
     }
 
