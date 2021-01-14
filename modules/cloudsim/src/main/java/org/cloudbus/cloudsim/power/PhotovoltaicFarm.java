@@ -4,21 +4,24 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PhotovoltaicFarm {
 
-
     private final int numberOfPanels;
     private final int panelArea;
     private final double solarPanelYield;
     private final double performanceRatio;
-    /*private final double solarPanelAngle;
-    private final double northing;  // odchylenie na północ (chyba tak jest po angielsku)*/
+    private final double solarPanelAngle;
+    /*private final double northing;  // odchylenie na północ (chyba tak jest po angielsku)*/
+    private double angleOfIncidenceOfSunsRays = 0; // i angle in equation
+    private double angleZ = 3 * Math.PI / 2; // Z angle in equation
 
-    public PhotovoltaicFarm(int numberOfPanels, int panelArea, double solarPanelYield, double performanceRatio/*, double solarPanelAngle, double northing*/){
+    public PhotovoltaicFarm(int numberOfPanels, int panelArea, double solarPanelYield, double performanceRatio, double solarPanelAngle, double angleOfIncidenceOfSunsRays, double angleZ/*, double northing*/){
         this.numberOfPanels = numberOfPanels;
         this.panelArea = panelArea;
         this.solarPanelYield = solarPanelYield;
         this.performanceRatio = performanceRatio;
-        /*this.solarPanelAngle = solarPanelAngle;
-        this.northing = northing;*/
+        this.solarPanelAngle = solarPanelAngle;
+        this.angleOfIncidenceOfSunsRays = angleOfIncidenceOfSunsRays;
+        this.angleZ = angleZ;
+        /*this.northing = northing;*/
 
         checkIfParametersAreWrong();
     }
@@ -30,29 +33,26 @@ public class PhotovoltaicFarm {
         this.panelArea = ThreadLocalRandom.current().nextInt(1,5);
         this.solarPanelYield = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
         this.performanceRatio = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
-        /*this.solarPanelAngle = ThreadLocalRandom.current().nextDouble(-Math.PI /2, Math.PI /2); // Angle measured in radians between normal and solar panel
-        this.northing = ThreadLocalRandom.current().nextDouble(0.0, Math.PI /2); // Not sure about a range of northing will be in*/
+        this.solarPanelAngle = Math.PI / 2;// ThreadLocalRandom.current().nextDouble(-Math.PI /2, Math.PI /2); // betha angle measured in radians between earth surface and solar panel
+        /*this.northing = ThreadLocalRandom.current().nextDouble(0.0, Math.PI /2); // Not sure about a range of northing will be in*/
         checkIfParametersAreWrong();
 
         System.out.printf("Class got random attributes 'numberOfPanels'=%d 'panelArea'=%d 'solarPanelYield'=%g 'performanceRatio'=%g%n", numberOfPanels, panelArea, solarPanelYield, performanceRatio);
     }
 
+    private boolean isZero(double value, double threshold){
+        return value >= -threshold && value <= threshold;
+    }
 
-    public double calculateEnergy(double timeDelta, double radiation) {
-        // In order to get energy produced by solar panels we used following equation: E = A x r x H x PR
-        // where:
-    //int numberOfPanels = 10;
-        // A - total panel area [m^2]
-    //int panelArea = 10;
-        // r - solar panel yield [%]
-    //double solarPanelYield = 0.8;
-        // H assumption: instead of annual average solar radiation on tilted panel average solar radiation
-        // in given period of time was used
-        // PR - performance ratio, constant for losses (range between 0.5 and 0.9, default value = 0.75)
-    //double performanceRatio = 0.75;
-
-        double averageSolarRadiationInGivenPeriodOfTime = radiation / timeDelta;
-        double powerInKiloWh = panelArea * numberOfPanels * solarPanelYield * averageSolarRadiationInGivenPeriodOfTime * performanceRatio;
+    public double calculateEnergy(double timeDelta, double dirRadiation, double difRadiation) {
+        double modulatingFunction = 1 - (isZero(difRadiation, 0.001) ?
+                difRadiation : (difRadiation / (difRadiation + dirRadiation * Math.cos(angleZ))));
+        double inclinedAverageSolarRadiationInGivenPeriodOfTime = difRadiation
+                * Math.pow(Math.cos(solarPanelAngle / 2), 2)
+                * (1 + modulatingFunction * Math.pow(Math.sin(solarPanelAngle / 2), 3))
+                * (1 + modulatingFunction * Math.pow(Math.cos(angleOfIncidenceOfSunsRays), 2)
+                * Math.pow(Math.sin(angleZ), 3));
+        double powerInKiloWh = panelArea * numberOfPanels * inclinedAverageSolarRadiationInGivenPeriodOfTime * timeDelta;
         return 3600000 * powerInKiloWh; // power in W*sec = J
     }
 

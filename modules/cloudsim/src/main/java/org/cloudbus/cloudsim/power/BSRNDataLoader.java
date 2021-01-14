@@ -8,14 +8,15 @@ import java.util.LinkedHashMap;
 
 public class BSRNDataLoader {
 
-    private final LinkedHashMap<String, Float> radiationsByDate;
+    private final LinkedHashMap<String, Float> dirRadiationsByDate;
+    private final LinkedHashMap<String, Float> difRadiationsByDate;
 
     public BSRNDataLoader(String filename) throws IOException {
-        radiationsByDate = new LinkedHashMap<>();
+        dirRadiationsByDate = new LinkedHashMap<>();
+        difRadiationsByDate = new LinkedHashMap<>();
 
         InputStream is = BSRNDataLoader.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(is);
-
 
         CSVReader csvReader = new CSVReader(reader, '\t');
 
@@ -25,16 +26,21 @@ public class BSRNDataLoader {
             //skip commented lines
         }
 
-        int radiationDataIdx = 0;
-        while(!nextLine[radiationDataIdx].equals("DIR [W/m**2]")) radiationDataIdx++;
+        int dirRadiationDataIdx = 0;
+        while(!nextLine[dirRadiationDataIdx].equals("DIR [W/m**2]")) dirRadiationDataIdx++;
+
+        int difRadiationDataIdx = 0;
+        while(!nextLine[difRadiationDataIdx].equals("DIF [W/m**2]")) difRadiationDataIdx++;
 
         while((nextLine = csvReader.readNext()) != null){
 
-            String radiationStr = nextLine[radiationDataIdx];
-            float radiation = radiationStr.equals("") ? 0 : Float.parseFloat(nextLine[radiationDataIdx]);
+            String dirRadiationStr = nextLine[dirRadiationDataIdx];
+            String difRadiationStr = nextLine[difRadiationDataIdx];
+            float dirRadiation = dirRadiationStr.equals("") ? 0 : Float.parseFloat(nextLine[dirRadiationDataIdx]);
+            float difRadiation = difRadiationStr.equals("") ? 0 : Float.parseFloat(nextLine[difRadiationDataIdx]);
 
-            radiationsByDate.put(nextLine[0], radiation);
-
+            dirRadiationsByDate.put(nextLine[0], dirRadiation);
+            difRadiationsByDate.put(nextLine[0], difRadiation);
         }
     }
 
@@ -43,8 +49,12 @@ public class BSRNDataLoader {
         this("BRB_radiation_2019-04.tab");
     }
 
-    public LinkedHashMap<String, Float> getRadiationsByDate(){
-        return radiationsByDate;
+    public LinkedHashMap<String, Float> getDirRadiationsByDate(){
+        return dirRadiationsByDate;
+    }
+
+    public LinkedHashMap<String, Float> getDifRadiationsByDate() {
+        return difRadiationsByDate;
     }
 
     public static void main(String[] args) throws IOException {
