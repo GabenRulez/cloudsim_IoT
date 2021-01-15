@@ -7,28 +7,31 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+
+
 public class RenewableEnergySource {
 
     static DateTimeFormatter DATE_TIME_FORMATTER_NO_SECONDS = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-    static BSRNDataLoader bsrnDataLoader;
-    static {
-        try {
-            bsrnDataLoader = new BSRNDataLoader();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    static LinkedHashMap<String, Float> dirRadiationsByDate = bsrnDataLoader.getDirRadiationsByDate();
-    static List<String> dirKeys = new ArrayList<>(dirRadiationsByDate.keySet());
-    static List<Float> dirValues = new ArrayList<>(dirRadiationsByDate.values());
-    static LinkedHashMap<String, Float> difRadiationsByDate = bsrnDataLoader.getDifRadiationsByDate();
-    static List<String> difKeys = new ArrayList<>(difRadiationsByDate.keySet());
-    static List<Float> difValues = new ArrayList<>(difRadiationsByDate.values());
+    BSRNDataLoader bsrnDataLoader;
+
+    LinkedHashMap<String, Float> dirRadiationsByDate;
+    List<String> dirKeys;
+    List<Float> dirValues;
+    LinkedHashMap<String, Float> difRadiationsByDate;
+    List<String> difKeys;
+    List<Float> difValues;
 
     protected PhotovoltaicFarm photovoltaicFarm;
 
-    public RenewableEnergySource(PhotovoltaicFarm photovoltaicFarm){
+    public RenewableEnergySource(PhotovoltaicFarm photovoltaicFarm, BSRNDataLoader bsrnDataLoader){
         this.photovoltaicFarm = photovoltaicFarm;
+        this.bsrnDataLoader = bsrnDataLoader;
+        dirRadiationsByDate = bsrnDataLoader.getDirRadiationsByDate();
+        dirKeys = new ArrayList<>(dirRadiationsByDate.keySet());
+        dirValues = new ArrayList<>(dirRadiationsByDate.values());
+        difRadiationsByDate = bsrnDataLoader.getDifRadiationsByDate();
+        difKeys = new ArrayList<>(difRadiationsByDate.keySet());
+        difValues = new ArrayList<>(difRadiationsByDate.values());
     }
     /*
         DONE:
@@ -60,17 +63,18 @@ public class RenewableEnergySource {
         double difEndEnergyDelta = computeEndEnergyDelta(difRadiationsByDate, endKey, currentTime);
         double dirRadiation = dirRoundedUpSum - dirStartEnergyDelta - dirEndEnergyDelta;
         double difRadiation = difRoundedUpSum - difStartEnergyDelta - difEndEnergyDelta;
+        System.out.println("timeDiff: " + timeDiff + " dirRadiation: " + dirRadiation + " difRadiation: " + difRadiation);
         return photovoltaicFarm.calculateEnergy(timeDiff, dirRadiation, difRadiation);
     }
 
-    private static double getRadiationRoundedUpSum(List<Float> values, List<String> keys, String startKey,
+    private double getRadiationRoundedUpSum(List<Float> values, List<String> keys, String startKey,
                                                    String endKey) {
         return values.subList(keys.indexOf(startKey), keys.indexOf(endKey) + 1).stream()
                 .mapToDouble(Float::doubleValue)
                 .sum();
     }
 
-    private static double computeEndEnergyDelta(LinkedHashMap<String, Float> radiationsBydDate, String endKey,
+    private double computeEndEnergyDelta(LinkedHashMap<String, Float> radiationsBydDate, String endKey,
                                                 double end) {
         float energy = radiationsBydDate.get(endKey);
         double deltaTime = 60 - (end - (Math.floor(end / 60.0) * 60.0));
@@ -78,7 +82,7 @@ public class RenewableEnergySource {
         return energy * (deltaTime / 60.0);
     }
 
-    private static double computeStartEnergyDelta(LinkedHashMap<String, Float> radiationsBydDate, String startKey,
+    private double computeStartEnergyDelta(LinkedHashMap<String, Float> radiationsBydDate, String startKey,
                                                   double start) {
         float energy = radiationsBydDate.get(startKey);
         double deltaTime = start - (Math.floor(start / 60.0) * 60.0);
@@ -86,19 +90,19 @@ public class RenewableEnergySource {
         return energy * (deltaTime / 60.0);
     }
 
-    private static String getStartKey(int start) {
+    private String getStartKey(int start) {
         LocalDateTime timeStamp = getTimestamp(start);
         timeStamp = timeStamp.withSecond(0);
         return timeStamp.format(DATE_TIME_FORMATTER_NO_SECONDS);
     }
 
-    private static String getEndKey(int end) {
+    private String getEndKey(int end) {
         LocalDateTime timeStamp = getTimestamp(end);
         timeStamp = timeStamp.plusMinutes(1).withSecond(0);
         return timeStamp.format(DATE_TIME_FORMATTER_NO_SECONDS);
     }
 
-    private static LocalDateTime getTimestamp(int start) {
+    private LocalDateTime getTimestamp(int start) {
         LocalDateTime startDateTime = LocalDateTime.parse(dirKeys.iterator().next(), DATE_TIME_FORMATTER_NO_SECONDS);
         return startDateTime.plusSeconds(start);
     }

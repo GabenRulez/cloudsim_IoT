@@ -74,10 +74,10 @@ public class PowerDatacenter extends Datacenter {
 			List<Storage> storageList,
 			double schedulingInterval) throws Exception {
 		super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
-		this.renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm());
+//		this.renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm());
 
 		setPower(0.0);
-		setRenewablePower(0.0);
+//		setRenewablePower(0.0);
 		setDisableMigrations(false);
 		setCloudletSubmitted(-1);
 		setMigrationCount(0);
@@ -92,6 +92,11 @@ public class PowerDatacenter extends Datacenter {
 		RenewableEnergySource renewableEnergySource
 		) throws Exception {
 		this(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
+		setRenewablePower(0.0);
+		this.renewableEnergySource = renewableEnergySource;
+	}
+
+	public void setRenewableEnergySource(RenewableEnergySource renewableEnergySource){
 		this.renewableEnergySource = renewableEnergySource;
 	}
 
@@ -246,17 +251,27 @@ public class PowerDatacenter extends Datacenter {
 		}
 
 		double power = getPower() + timeFrameDatacenterEnergy;
-		double timeframeRenewableEnergy = renewableEnergySource.getEnergyInTimeFrame(currentTime, timeDiff);
-		// NOTE: we assume that collectors doesn't have any integrated accumulator, and excess energy is lost
-		double renewablePower = getRenewablePower() + Math.min(timeFrameDatacenterEnergy, timeframeRenewableEnergy);
+
+		if(renewableEnergySource != null) {
+			double timeframeRenewableEnergy = renewableEnergySource.getEnergyInTimeFrame(currentTime, timeDiff);
+			// NOTE: we assume that collectors doesn't have any integrated accumulator, and excess energy is lost
+			double renewablePower = getRenewablePower() + Math.min(timeFrameDatacenterEnergy, timeframeRenewableEnergy);
+
+			Log.formatLine(
+					"\n%.2f: Data center's renewable energy is %.2f W*sec\n",
+					currentTime,
+					Math.min(timeFrameDatacenterEnergy, timeframeRenewableEnergy));
+
+			setRenewablePower(renewablePower);
+
+			Log.formatLine(
+					"\n%.2f: Data center's renewable power used is %.2f W*sec\n",
+					currentTime,
+					getRenewablePower());
+		}
 
 		setPower(power);
-		setRenewablePower(renewablePower);
 
-		Log.formatLine(
-				"\n%.2f: Data center's renewable power used is %.2f W*sec\n",
-				currentTime,
-				getRenewablePower());
 
 		Log.formatLine(
 				"\n%.2f: Data center's grid power used is %.2f W*sec\n",
@@ -326,7 +341,13 @@ public class PowerDatacenter extends Datacenter {
 	/**
 	 * Sets the renewable power.
 	 *
-	 * @param renewablePower the new renewable power
+	 * @param renewablePower
+
+86100.01: Data center's renewable power used is -19304135035665.23 W*sec
+
+
+86100.01: Data center's grid power used is 19306962072473.76 W*sec
+r the new renewable power
 	 */
 	protected void setRenewablePower(double renewablePower) {
 		this.renewablePower = renewablePower;

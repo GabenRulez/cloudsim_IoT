@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.examples.power.Helper;
 import org.cloudbus.cloudsim.examples.power.RunnerAbstract;
+import org.cloudbus.cloudsim.power.RenewableEnergySource;
 
 /**
  * The example runner for the PlanetLab workload.
@@ -53,6 +54,28 @@ public class PlanetLabRunner extends RunnerAbstract {
 				vmAllocationPolicy,
 				vmSelectionPolicy,
 				parameter);
+	}
+
+	public PlanetLabRunner(
+			boolean enableOutput,
+			boolean outputToFile,
+			String inputFolder,
+			String outputFolder,
+			String workload,
+			String vmAllocationPolicy,
+			String vmSelectionPolicy,
+			String parameter,
+			RenewableEnergySource renewableEnergySource) {
+		super(
+				enableOutput,
+				outputToFile,
+				inputFolder,
+				outputFolder,
+				workload,
+				vmAllocationPolicy,
+				vmSelectionPolicy,
+				parameter,
+				renewableEnergySource);
 	}
 
 	/*

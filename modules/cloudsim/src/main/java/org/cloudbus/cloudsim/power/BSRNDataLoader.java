@@ -5,6 +5,9 @@ import com.opencsv.CSVReader;
 import java.io.*;
 import java.util.LinkedHashMap;
 
+/**
+ * A class responsible for loading and parsing data from BSRN datasets. Stores radiation parameters in hashmaps.
+ */
 
 public class BSRNDataLoader {
 
@@ -36,8 +39,8 @@ public class BSRNDataLoader {
 
             String dirRadiationStr = nextLine[dirRadiationDataIdx];
             String difRadiationStr = nextLine[difRadiationDataIdx];
-            float dirRadiation = dirRadiationStr.equals("") ? 0 : Float.parseFloat(nextLine[dirRadiationDataIdx]);
-            float difRadiation = difRadiationStr.equals("") ? 0 : Float.parseFloat(nextLine[difRadiationDataIdx]);
+            float dirRadiation = dirRadiationStr.equals("") ? 0 : Math.max(0, Float.parseFloat(nextLine[dirRadiationDataIdx]));
+            float difRadiation = difRadiationStr.equals("") ? 0 : Math.max(0, Float.parseFloat(nextLine[difRadiationDataIdx]));
 
             dirRadiationsByDate.put(nextLine[0], dirRadiation);
             difRadiationsByDate.put(nextLine[0], difRadiation);
@@ -46,7 +49,11 @@ public class BSRNDataLoader {
 
 
     public BSRNDataLoader() throws IOException {
-        this("BRB_radiation_2019-04.tab");
+//        this("BRB_radiation_2019-04.tab");
+        this("IZA_radiation_2019-05.tab");
+
+//        this("Data-example-04_QC_combined.txt");
+//        this("SPO_radiation_2017-04.tab");
     }
 
     public LinkedHashMap<String, Float> getDirRadiationsByDate(){
@@ -58,29 +65,13 @@ public class BSRNDataLoader {
     }
 
     public static void main(String[] args) throws IOException {
-        new BSRNDataLoader();
-//        String datasetFileName = args.length > 0 ? args[0] : "BRB_radiation_2019-04.tab";
-//
-//        InputStream fileInputStream = BSRNDataLoader.class.getResourceAsStream(datasetFileName);
-//        System.out.println(fileInputStream);
-//        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-//
-//        bufferedReader
-//            .lines()
-//            .filter(line -> {
-//                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-//                try {
-//                    dateFormat.parse(line.split("\t")[0]);
-//                    return true;
-//                } catch (ParseException e) {
-//                    return false;
-//                }
-//            })
-//            .map(s -> {
-//                String[] splitStrings = s.split("\t");
-//                return Arrays.asList(splitStrings);
-//            })
-//            .forEach(System.out::println);
+        BSRNDataLoader loader = new BSRNDataLoader();
+//        for(Float dif : loader.getDifRadiationsByDate().values()) {
+//            if(dif < 0)
+//            System.out.print(dif + " ");
+//        }
+
+
     }
 
 }

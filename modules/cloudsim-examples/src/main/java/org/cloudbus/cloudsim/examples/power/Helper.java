@@ -27,12 +27,7 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.VmStateHistoryEntry;
-import org.cloudbus.cloudsim.power.PowerDatacenter;
-import org.cloudbus.cloudsim.power.PowerDatacenterBroker;
-import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerHostUtilizationHistory;
-import org.cloudbus.cloudsim.power.PowerVm;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
+import org.cloudbus.cloudsim.power.*;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
@@ -185,12 +180,64 @@ public class Helper {
 		return datacenter;
 	}
 
-	/**
-	 * Gets the times before host shutdown.
-	 * 
-	 * @param hosts the hosts
-	 * @return the times before host shutdown
-	 */
+	public static Datacenter createDatacenter(
+			String name,
+			Class<? extends Datacenter> datacenterClass,
+			List<PowerHost> hostList,
+			VmAllocationPolicy vmAllocationPolicy,
+			RenewableEnergySource renewableEnergySource) throws Exception {
+		String arch = "x86"; // system architecture
+		String os = "Linux"; // operating system
+		String vmm = "Xen";
+		double time_zone = 10.0; // time zone this resource located
+		double cost = 3.0; // the cost of using processing in this resource
+		double costPerMem = 0.05; // the cost of using memory in this resource
+		double costPerStorage = 0.001; // the cost of using storage in this resource
+		double costPerBw = 0.0; // the cost of using bw in this resource
+
+		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(
+				arch,
+				os,
+				vmm,
+				hostList,
+				time_zone,
+				cost,
+				costPerMem,
+				costPerStorage,
+				costPerBw);
+
+		Datacenter datacenter = null;
+		try {
+			datacenter = datacenterClass.getConstructor(
+					String.class,
+					DatacenterCharacteristics.class,
+					VmAllocationPolicy.class,
+					List.class,
+					Double.TYPE).newInstance(
+					name,
+					characteristics,
+					vmAllocationPolicy,
+					new LinkedList<Storage>(),
+					Constants.SCHEDULING_INTERVAL);
+			((PowerDatacenter) datacenter).setRenewableEnergySource(renewableEnergySource);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		return datacenter;
+	}
+
+
+
+
+			/**
+             * Gets the times before host shutdown.
+             *
+             * @param hosts the hosts
+             * @return the times before host shutdown
+             */
 	public static List<Double> getTimesBeforeHostShutdown(List<Host> hosts) {
 		List<Double> timeBeforeShutdown = new LinkedList<Double>();
 		for (Host host : hosts) {

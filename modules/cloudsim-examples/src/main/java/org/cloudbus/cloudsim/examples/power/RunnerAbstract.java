@@ -12,20 +12,7 @@ import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.power.PowerDatacenter;
-import org.cloudbus.cloudsim.power.PowerHost;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationInterQuartileRange;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegression;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegressionRobust;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationStaticThreshold;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
-import org.cloudbus.cloudsim.power.PowerVmSelectionPolicy;
-import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMaximumCorrelation;
-import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMinimumMigrationTime;
-import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMinimumUtilization;
-import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyRandomSelection;
+import org.cloudbus.cloudsim.power.*;
 
 /**
  * The Class RunnerAbstract.
@@ -99,6 +86,39 @@ public abstract class RunnerAbstract {
 				getVmAllocationPolicy(vmAllocationPolicy, vmSelectionPolicy, parameter));
 	}
 
+
+	public RunnerAbstract(
+			boolean enableOutput,
+			boolean outputToFile,
+			String inputFolder,
+			String outputFolder,
+			String workload,
+			String vmAllocationPolicy,
+			String vmSelectionPolicy,
+			String parameter,
+			RenewableEnergySource renewableEnergySource) {
+		try {
+			initLogOutput(
+					enableOutput,
+					outputToFile,
+					outputFolder,
+					workload,
+					vmAllocationPolicy,
+					vmSelectionPolicy,
+					parameter);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		init(inputFolder + "/" + workload);
+		start(
+				getExperimentName(workload, vmAllocationPolicy, vmSelectionPolicy, parameter),
+				outputFolder,
+				getVmAllocationPolicy(vmAllocationPolicy, vmSelectionPolicy, parameter),
+				renewableEnergySource);
+	}
+
 	/**
 	 * Inits the log output.
 	 * 
@@ -163,6 +183,49 @@ public abstract class RunnerAbstract {
 					PowerDatacenter.class,
 					hostList,
 					vmAllocationPolicy);
+
+
+			datacenter.setDisableMigrations(false);
+
+			broker.submitVmList(vmList);
+			broker.submitCloudletList(cloudletList);
+
+			CloudSim.terminateSimulation(Constants.SIMULATION_LIMIT);
+			double lastClock = CloudSim.startSimulation();
+
+			List<Cloudlet> newList = broker.getCloudletReceivedList();
+			Log.printLine("Received " + newList.size() + " cloudlets");
+
+			CloudSim.stopSimulation();
+
+			Helper.printResults(
+					datacenter,
+					vmList,
+					lastClock,
+					experimentName,
+					Constants.OUTPUT_CSV,
+					outputFolder);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.printLine("The simulation has been terminated due to an unexpected error");
+			System.exit(0);
+		}
+
+		Log.printLine("Finished " + experimentName);
+	}
+
+	protected void start(String experimentName, String outputFolder, VmAllocationPolicy vmAllocationPolicy, RenewableEnergySource renewableEnergySource) {
+		System.out.println("Starting " + experimentName);
+
+		try {
+			PowerDatacenter datacenter = (PowerDatacenter) Helper.createDatacenter(
+					"Datacenter",
+					PowerDatacenter.class,
+					hostList,
+					vmAllocationPolicy,
+					renewableEnergySource);
+
 
 			datacenter.setDisableMigrations(false);
 
