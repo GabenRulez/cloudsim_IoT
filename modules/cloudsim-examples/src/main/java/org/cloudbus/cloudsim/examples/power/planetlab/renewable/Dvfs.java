@@ -48,7 +48,7 @@ public class Dvfs {
 		BSRNDataLoader bsrnDataLoader = null;
 		try {
 			bsrnDataLoader = new BSRNDataLoader(
-					"DAA_radiation_2020-01.tab"
+					"BUD_radiation_2020-07.tab"
 			);
 		} catch (IOException e) {
 			e.printStackTrace();
