@@ -16,6 +16,8 @@ Some existing examples were changed and now include the usage of renewable energ
 
 ![Example plot](plot.png)
 
+Example plot generated from **Dvfs** example, based on station Budapest data (2020-07). Plot illustrates total energy used by data center (blue line) and energy from renewable sources (orange line).
+
 # Authors #
 
 * Anna Nosek
