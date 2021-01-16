@@ -35,12 +35,12 @@ public class Dvfs {
 	 * @param args the arguments
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, Exception {
 		boolean enableOutput = true;
 		boolean outputToFile = false;
 		String inputFolder = Dvfs.class.getClassLoader().getResource("workload/planetlab").getPath().replace("%20", " ");
 		String outputFolder = "output";
-		String workload = "20110303"; // PlanetLab workload
+		String workload = "20110420"; // PlanetLab workload
 		String vmAllocationPolicy = "dvfs"; // DVFS policy without VM migrations
 		String vmSelectionPolicy = "";
 		String parameter = "";
@@ -52,10 +52,12 @@ public class Dvfs {
 			);
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new Exception("Couldn't initialize BSRNDataLoader object.");
 		}
 
-		RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(), bsrnDataLoader);
-
+		// Wcześniej był tu odpowiednik
+		// RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(12,2,0.5,0.5), bsrnDataLoader);
+		RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(1,1,1,0.00002), bsrnDataLoader);
 
 		new PlanetLabRunner(
 				enableOutput,
@@ -68,5 +70,4 @@ public class Dvfs {
 				parameter,
 				renewableEnergySource);
 	}
-
 }

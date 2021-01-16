@@ -26,6 +26,15 @@ public class PhotovoltaicFarm {
         checkIfParametersAreWrong();
     }
 
+    public PhotovoltaicFarm(int numberOfPanels, int panelArea, double solarPanelYield, double performanceRatio){
+        this.numberOfPanels = numberOfPanels;
+        this.panelArea = panelArea;
+        this.solarPanelYield = solarPanelYield;
+        this.performanceRatio = performanceRatio;
+        this.solarPanelAngle = Math.PI / 2;
+        checkIfParametersAreWrong();
+    }
+
     public PhotovoltaicFarm(){
         System.out.println("PhotovoltaicFarm constructor called without parameters.");
 
@@ -52,7 +61,7 @@ public class PhotovoltaicFarm {
                 * (1 + modulatingFunction * Math.pow(Math.sin(solarPanelAngle / 2), 3))
                 * (1 + modulatingFunction * Math.pow(Math.cos(angleOfIncidenceOfSunsRays), 2)
                 * Math.pow(Math.sin(angleZ), 3));
-        double powerInKiloWh = panelArea * numberOfPanels * inclinedAverageSolarRadiationInGivenPeriodOfTime * timeDelta;
+        double powerInKiloWh = panelArea * numberOfPanels * inclinedAverageSolarRadiationInGivenPeriodOfTime * timeDelta * solarPanelYield * performanceRatio;
         return 3600000 * powerInKiloWh; // power in W*sec = J
     }
 
