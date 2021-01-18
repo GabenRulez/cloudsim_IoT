@@ -49,11 +49,7 @@ public class BSRNDataLoader {
 
 
     public BSRNDataLoader() throws IOException {
-//        this("BRB_radiation_2019-04.tab");
         this("IZA_radiation_2019-05.tab");
-
-//        this("Data-example-04_QC_combined.txt");
-//        this("SPO_radiation_2017-04.tab");
     }
 
     public LinkedHashMap<String, Float> getDirRadiationsByDate(){
@@ -64,14 +60,5 @@ public class BSRNDataLoader {
         return difRadiationsByDate;
     }
 
-    public static void main(String[] args) throws IOException {
-        BSRNDataLoader loader = new BSRNDataLoader();
-//        for(Float dif : loader.getDifRadiationsByDate().values()) {
-//            if(dif < 0)
-//            System.out.print(dif + " ");
-//        }
-
-
-    }
 
 }
