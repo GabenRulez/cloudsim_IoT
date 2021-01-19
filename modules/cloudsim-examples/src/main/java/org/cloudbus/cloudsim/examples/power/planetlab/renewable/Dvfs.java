@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.power.PhotovoltaicFarm;
 import org.cloudbus.cloudsim.power.RenewableEnergySource;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A simulation of a heterogeneous power aware data center that only applied DVFS, but no dynamic
@@ -35,39 +36,40 @@ public class Dvfs {
 	 * @param args the arguments
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void main(String[] args) throws IOException, Exception {
+	public static void main(String[] args) throws Exception {
+
 		boolean enableOutput = true;
 		boolean outputToFile = false;
-		String inputFolder = Dvfs.class.getClassLoader().getResource("workload/planetlab").getPath().replace("%20", " ");
+		String inputFolder = Objects.requireNonNull(Dvfs.class.getClassLoader().getResource("workload/planetlab")).getPath().replace("%20", " ");
 		String outputFolder = "output";
 		String workload = "20110420"; // PlanetLab workload
 		String vmAllocationPolicy = "dvfs"; // DVFS policy without VM migrations
 		String vmSelectionPolicy = "";
 		String parameter = "";
 
-		BSRNDataLoader bsrnDataLoader = null;
 		try {
-			bsrnDataLoader = new BSRNDataLoader(
+			BSRNDataLoader bsrnDataLoader = new BSRNDataLoader(
 					"BUD_radiation_2020-07.tab"
 			);
+
+			// RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(12,2,0.5,0.5), bsrnDataLoader);
+			RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(1, 1, 0.0001, 0.2), bsrnDataLoader);
+
+			new PlanetLabRunner(
+					enableOutput,
+					outputToFile,
+					inputFolder,
+					outputFolder,
+					workload,
+					vmAllocationPolicy,
+					vmSelectionPolicy,
+					parameter,
+					renewableEnergySource);
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new Exception("Couldn't initialize BSRNDataLoader object.");
 		}
-
-		// Wcześniej był tu odpowiednik
-		// RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(12,2,0.5,0.5), bsrnDataLoader);
-		RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(1,1,1,0.00002), bsrnDataLoader);
-
-		new PlanetLabRunner(
-				enableOutput,
-				outputToFile,
-				inputFolder,
-				outputFolder,
-				workload,
-				vmAllocationPolicy,
-				vmSelectionPolicy,
-				parameter,
-				renewableEnergySource);
 	}
 }

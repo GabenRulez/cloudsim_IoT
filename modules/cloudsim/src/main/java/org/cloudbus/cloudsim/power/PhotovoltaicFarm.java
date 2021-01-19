@@ -5,15 +5,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PhotovoltaicFarm {
 
     private final int numberOfPanels;
-    private final int panelArea;
+    private final double panelArea;
     private final double solarPanelYield;
     private final double performanceRatio;
     private final double solarPanelAngle;
-    /*private final double northing;  // odchylenie na północ (chyba tak jest po angielsku)*/
     private double angleOfIncidenceOfSunsRays = 0; // i angle in equation
     private double angleZ = 3 * Math.PI / 2; // Z angle in equation
 
-    public PhotovoltaicFarm(int numberOfPanels, int panelArea, double solarPanelYield, double performanceRatio, double solarPanelAngle, double angleOfIncidenceOfSunsRays, double angleZ/*, double northing*/){
+    public PhotovoltaicFarm(int numberOfPanels, double panelArea, double solarPanelYield, double performanceRatio, double solarPanelAngle, double angleOfIncidenceOfSunsRays, double angleZ){
         this.numberOfPanels = numberOfPanels;
         this.panelArea = panelArea;
         this.solarPanelYield = solarPanelYield;
@@ -21,12 +20,11 @@ public class PhotovoltaicFarm {
         this.solarPanelAngle = solarPanelAngle;
         this.angleOfIncidenceOfSunsRays = angleOfIncidenceOfSunsRays;
         this.angleZ = angleZ;
-        /*this.northing = northing;*/
 
         checkIfParametersAreWrong();
     }
 
-    public PhotovoltaicFarm(int numberOfPanels, int panelArea, double solarPanelYield, double performanceRatio){
+    public PhotovoltaicFarm(int numberOfPanels, double panelArea, double solarPanelYield, double performanceRatio){
         this.numberOfPanels = numberOfPanels;
         this.panelArea = panelArea;
         this.solarPanelYield = solarPanelYield;
@@ -39,14 +37,13 @@ public class PhotovoltaicFarm {
         System.out.println("PhotovoltaicFarm constructor called without parameters.");
 
         this.numberOfPanels = ThreadLocalRandom.current().nextInt(1,25);
-        this.panelArea = ThreadLocalRandom.current().nextInt(1,5);
+        this.panelArea = ThreadLocalRandom.current().nextDouble(0.5,4);
         this.solarPanelYield = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
         this.performanceRatio = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
         this.solarPanelAngle = Math.PI / 2;// ThreadLocalRandom.current().nextDouble(-Math.PI /2, Math.PI /2); // betha angle measured in radians between earth surface and solar panel
-        /*this.northing = ThreadLocalRandom.current().nextDouble(0.0, Math.PI /2); // Not sure about a range of northing will be in*/
         checkIfParametersAreWrong();
 
-        System.out.printf("Class got random attributes 'numberOfPanels'=%d 'panelArea'=%d 'solarPanelYield'=%g 'performanceRatio'=%g%n", numberOfPanels, panelArea, solarPanelYield, performanceRatio);
+        System.out.printf("Class got random attributes 'numberOfPanels'=%d 'panelArea'=%g 'solarPanelYield'=%g 'performanceRatio'=%g%n", numberOfPanels, panelArea, solarPanelYield, performanceRatio);
     }
 
     private boolean isZero(double value, double threshold){
@@ -71,7 +68,6 @@ public class PhotovoltaicFarm {
         if(panelArea < 0)                                       throw new IllegalArgumentException(errorString + " 'panelArea' shouldn't be lesser than 0. Got '" + panelArea + "'.");
         if(solarPanelYield < 0.0 || solarPanelYield > 1.0)      throw new IllegalArgumentException(errorString + " 'solarPanelYield' should be between 0.0 and 1.0. Got '" + solarPanelYield + "'.");
         if(performanceRatio < 0.0 || performanceRatio > 1.0)    throw new IllegalArgumentException(errorString + " 'performanceRatio' should be between 0.0 and 1.0. Got '" + performanceRatio + "'.");
-        /*if(solarPanelAngle < -Math.PI /2 || solarPanelAngle > Math.PI /2) throw new IllegalArgumentException(errorString + " 'solarPanelAngle' should be between -PI/2 and PI/2. Got '" + solarPanelAngle + "'.");
-        if(northing < 0 || northing > Math.PI/2)                throw new IllegalArgumentException(errorString + " 'northing' should be between 0.0 and PI/2. Got '" + northing + "'.");*/
+        if(solarPanelAngle < -Math.PI /2 || solarPanelAngle > Math.PI /2) throw new IllegalArgumentException(errorString + " 'solarPanelAngle' should be between -PI/2 and PI/2. Got '" + solarPanelAngle + "'.");
     }
 }
