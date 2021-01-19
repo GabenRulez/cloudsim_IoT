@@ -53,7 +53,7 @@ public class Dvfs {
 			);
 
 			// RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(12,2,0.5,0.5), bsrnDataLoader);
-			RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(1, 1, 0.0001, 0.2), bsrnDataLoader);
+			RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(1, 1, 0.00011, 0.9,0.2), bsrnDataLoader);
 
 			new PlanetLabRunner(
 					enableOutput,
