@@ -63,7 +63,7 @@ public class RenewableEnergySource {
         double difEndEnergyDelta = computeEndEnergyDelta(difRadiationsByDate, endKey, currentTime);
         double dirRadiation = dirRoundedUpSum - dirStartEnergyDelta - dirEndEnergyDelta;
         double difRadiation = difRoundedUpSum - difStartEnergyDelta - difEndEnergyDelta;
-        System.out.println("timeDiff: " + timeDiff + " dirRadiation: " + dirRadiation + " difRadiation: " + difRadiation);
+//        System.out.println("timeDiff: " + timeDiff + " dirRadiation: " + dirRadiation + " difRadiation: " + difRadiation);
         return photovoltaicFarm.calculateEnergy(timeDiff, dirRadiation, difRadiation);
     }
 
@@ -78,7 +78,7 @@ public class RenewableEnergySource {
                                                 double end) {
         float energy = radiationsBydDate.get(endKey);
         double deltaTime = 60 - (end - (Math.floor(end / 60.0) * 60.0));
-        System.out.println(deltaTime);
+//        System.out.println(deltaTime);
         return energy * (deltaTime / 60.0);
     }
 
@@ -86,7 +86,7 @@ public class RenewableEnergySource {
                                                   double start) {
         float energy = radiationsBydDate.get(startKey);
         double deltaTime = start - (Math.floor(start / 60.0) * 60.0);
-        System.out.println(deltaTime);
+//        System.out.println(deltaTime);
         return energy * (deltaTime / 60.0);
     }
 
