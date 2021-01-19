@@ -47,7 +47,7 @@ public class IqrMc {
 		BSRNDataLoader bsrnDataLoader = null;
 		try {
 			bsrnDataLoader = new BSRNDataLoader(
-					"BRB_radiation_2019-04.tab"
+					"BUD_radiation_2020-07.tab"
 			);
 		} catch (IOException e) {
 			e.printStackTrace();

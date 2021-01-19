@@ -31,6 +31,10 @@ Parameters of PhotovoltaicFarm in the above example:
 * performance ratio 0.9
 * efficiency 0.2
 
+Dataset citation:
+
+Fekete, Dénes (2020): Radiosonde measurements from station Budapest (2020-07). Hungarian Meteorological Service, PANGAEA, https://doi.org/10.1594/PANGAEA.923212
+
 # Equation used to calculate energy from renewable sources #
 
 Equation used to calculate energy from renewable sources was taken from article:  

@@ -49,7 +49,7 @@ public class BSRNDataLoader {
 
 
     public BSRNDataLoader() throws IOException {
-        this("IZA_radiation_2019-05.tab");
+        this("BUD_radiation_2020-07.tab");
     }
 
     public LinkedHashMap<String, Float> getDirRadiationsByDate(){
