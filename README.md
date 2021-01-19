@@ -53,5 +53,5 @@ To get final value of  energy from renewable sources _D<sub>&beta;</sub>_ was mu
 * [Piotr Kasprzyk](https://github.com/kaspiotr)
 * [Wojciech Kosztyła](https://github.com/GabenRulez)
 
-Created as a project for Internet of Things course on AGH University of Science and Technology.
+Created as a project for Internet of Things course on [AGH University of Science and Technology](https://www.agh.edu.pl/en/).
 
