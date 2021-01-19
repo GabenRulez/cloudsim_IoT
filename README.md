@@ -42,15 +42,16 @@ To get final value of  energy from renewable sources _D<sub>&beta;</sub>_ was mu
 * number of panels,  
 * time in which panel was exposed on solar radiation [s],  
 * solar's panel yield (given by the ratio : electrical power (in kWp) of one solar panel divided by the area of one panel) [%],  
-* performance ratio (constant for losses - range between 0.5 and 0.9, default value = 0.75).  
+* performance ratio (constant for losses - range between 0.5 and 0.9, default value = 0.75),  
+* efficiency (constant for solar panels - range between 0.18 and 0.23).
 
  
 # Authors #
 
-* Anna Nosek
-* Kamil Krzempek
-* Piotr Kasprzyk
-* Wojciech Kosztyła
+* [Anna Nosek](https://github.com/Enkelian)
+* [Kamil Krzempek](https://github.com/krzempekk)
+* [Piotr Kasprzyk](https://github.com/kaspiotr)
+* [Wojciech Kosztyła](https://github.com/GabenRulez)
 
 Created as a project for Internet of Things course on AGH University of Science and Technology.
 
