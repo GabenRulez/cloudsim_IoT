@@ -55,7 +55,6 @@ public class Dvfs {
 			throw new Exception("Couldn't initialize BSRNDataLoader object.");
 		}
 
-		// Wcześniej był tu odpowiednik
 		// RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(12,2,0.5,0.5), bsrnDataLoader);
 		RenewableEnergySource renewableEnergySource = new RenewableEnergySource(new PhotovoltaicFarm(1,1,1,0.00002), bsrnDataLoader);
 

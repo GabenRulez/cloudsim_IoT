@@ -12,7 +12,13 @@ User can import data from **BSRN database**, define the parameters of a farm and
 * *PowerDataCenter* now keeps track of renewable energy usage
 
 # Running examples #
-Some existing examples were changed and now include the usage of renewable energy. They can be found in **cloudsim-examples**.  
+Some existing examples were changed and now include the usage of renewable energy. They can be found in **cloudsim-examples**.
+
+Datasets from BSRN should be placed in `src/main/resources/org/cloudbus/cloudsim/power`.
+
+Examples can be run from: `src/main/java/org/cloudbus/cloudsim/examples/power/planetlab/renewable`.
+
+The existing examples from the `planetlab` package can be easily adapted to the new functionalities by passing a `RenewableEnergySource` object as the last parameter of `PlanetLabRunner` constructor.
 
 ![Example plot](plot.png)
 
