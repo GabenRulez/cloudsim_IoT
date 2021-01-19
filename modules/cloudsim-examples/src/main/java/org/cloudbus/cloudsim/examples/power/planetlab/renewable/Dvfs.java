@@ -49,7 +49,7 @@ public class Dvfs {
 
 		BSRNDataLoader bsrnDataLoader = null;
 		try {
-			BSRNDataLoader bsrnDataLoader = new BSRNDataLoader(
+			bsrnDataLoader = new BSRNDataLoader(
 					"BUD_radiation_2020-07.tab"
 			);
 		} catch (IOException e) {
@@ -72,9 +72,5 @@ public class Dvfs {
 					renewableEnergySource);
 
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new Exception("Couldn't initialize BSRNDataLoader object.");
-		}
 	}
 }

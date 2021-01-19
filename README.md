@@ -24,6 +24,13 @@ The existing examples from the `planetlab` package can be easily adapted to the 
 
 Example plot generated from **Dvfs** example, based on station Budapest data (2020-07). Plot illustrates total energy used by data center (blue line) and energy from renewable sources (orange line).
 
+Parameters of PhotovoltaicFarm in the above example:
+* number of panels 1
+* panel area 1
+* solar panel yield 0.00011
+* performance ratio 0.9
+* efficiency 0.2
+
 # Equation used to calculate energy from renewable sources #
 
 Equation used to calculate energy from renewable sources was taken from article:  
